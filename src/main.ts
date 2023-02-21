@@ -3,7 +3,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
+
 const app = createApp(App)
 
-
-app.mount('#app')
+xxe.init(app).then(v => app.mount("#app")).catch(e => {
+    console.log("e");
+})

@@ -32,12 +32,12 @@ class Modules {
             "__XXENGINE__/cus/**/*.ts", "!__XXENGINE__/sys/plugins/**/*.ts"], { eager: true });
         const cb = (comps: Record<string, unknown>) => {
             Object.entries(comps).forEach(([k, v]) => {
+            
                 const data = getModule(k, v);
                 this.register(data.name, data.mod, data.type);
             })
         }
-        cb(comps);
-
+        cb(comps)
         let syss = Object.entries(this.sys).map(([k, v]) => {
             return (<any>v).onInit && (<any>v).onInit(app);
         })

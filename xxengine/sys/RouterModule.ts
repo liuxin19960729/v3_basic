@@ -1,5 +1,5 @@
 
-import { type App } from 'vue';
+import type { App } from 'vue';
 import Module from '../Module'
 
 declare global {
@@ -11,7 +11,7 @@ declare global {
     }
 }
 
-export default class RouterModule extends Module implements IRouterModule {
+export default class RouterModule extends Module implements IRouterModule  {
 
     readonly name: string = "route";
     onInit(app: App): Promise<any> {

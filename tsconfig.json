@@ -5,8 +5,8 @@
     "src/**/*",
     "src/**/*.vue",
     // 模块代码
-    "xxengine/*.ts",
-    "xxengine/*.d.ts"
+    "xxengine/**/*.ts",
+    "xxengine/**/*.d.ts"
   ],
   "compilerOptions": {
     "strictNullChecks": false,

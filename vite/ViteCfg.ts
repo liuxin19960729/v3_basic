@@ -24,6 +24,7 @@ const lib = (env: ConfigEnv): UserConfig => {
         entry: `${process.cwd()}/xxengine/xxengine.ts`,
         name: 'xxe',
         fileName: "xxengine",
+        // iife 是立即执行函数
         formats: ["umd"]
     }
     cfg.build.rollupOptions = {

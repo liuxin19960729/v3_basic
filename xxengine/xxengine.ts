@@ -10,45 +10,46 @@ declare global {
     interface ICusMoudles {
 
     }
+    interface XXECONFIG {
+
+    }
     namespace xxe {
         const sys: ISysMoudles;
         const cus: ICusMoudles;
-        function init(app: App): Promise<any>;
+        function init(app: App, cfg: XXECONFIG): Promise<any>;
     }
 }
 
-const getModule = (path: string, rawMod: any): { name: string, mod: any, type: "sys" | "cus" } => {
-    let type: "sys" | "cus" = path.includes("sys") ? "sys" : "cus";
-    let modObj = new rawMod.default();
-    return { name: modObj.name, mod: modObj, type: type };
-}
+export type ModType = "sys" | "cus";
+
+
 
 class Modules {
     private readonly sys: { [key: keyof any]: Module } = {};
     private readonly cus: { [key: keyof any]: Module } = {}
-    async init(app: App) {
-        // 过滤到 sys/plugins 里面的内容
-        let comps = import.meta.glob(["__XXENGINE__/sys/**/*.ts",
-            "__XXENGINE__/cus/**/*.ts", "!__XXENGINE__/sys/plugins/**/*.ts"], { eager: true });
-        const cb = (comps: Record<string, unknown>) => {
-            Object.entries(comps).forEach(([k, v]) => {
-            
-                const data = getModule(k, v);
-                this.register(data.name, data.mod, data.type);
-            })
-        }
-        cb(comps)
+    async init(app: App, cfg: Readonly<XXECONFIG>) {
+        let comps = import.meta.glob(["__XXENGINE__/modules/**/*.ts"], { eager: true });
+
+        Object.entries(comps).forEach(([k,v])=>{
+            let mod: Module = new (<any>v).default();
+            const type: ModType = /modules\/sys/.test(k) ? "sys" : "cus";
+            this.register(mod.name, mod,type)
+        });
+
         let syss = Object.entries(this.sys).map(([k, v]) => {
-            return (<any>v).onInit && (<any>v).onInit(app);
+            return (<any>v).onInit && (<any>v).onInit(app, cfg);
         })
         let cuss = Object.entries(this.cus).map(([k, v]) => {
-            return (<any>v).onInit && (<any>v).onInit(app);
+            return (<Module>v).onInit && (<Module>v).onInit(app, cfg);
         })
-
-        return Promise.all([syss, cuss]);
+        await Promise.all([syss, cuss]);
+        return Promise.resolve();
     }
-    protected register(name: string, mod: Module, type: "sys" | "cus") {
+    register(name: string, mod: Module, type: ModType) {
         let continer = type == "cus" ? this.cus : this.sys;
+        if (!!!name || !!!mod || !!!type) {
+            throw new Error("mod constructor 错误");
+        }
         if (continer[name]) {
             throw new Error(`重复注册名字${name} 模块`);
         }
@@ -63,5 +64,6 @@ class Modules {
 const mods = new Modules();
 
 (<any>window)["xxe"] = mods;
+export default mods;
 
 

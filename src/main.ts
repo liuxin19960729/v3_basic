@@ -2,10 +2,25 @@
 
 import { createApp } from 'vue'
 import App from './App.vue'
+import Index from './views/Index.vue'
 
+
+const cfg: XXECONFIG = {
+    router: {
+        root: {
+            path: "/",
+            componet:Index
+        },
+        layouts:{
+            data:import.meta.glob("@/views/layouts/*.ts")
+        }
+    }
+}
 
 const app = createApp(App)
 
-xxe.init(app).then(v => app.mount("#app")).catch(e => {
-    console.log("e");
+xxe.init(app, cfg).then(v => {
+    app.mount("#app");
+}).catch(e => {
+    console.error(e);
 })

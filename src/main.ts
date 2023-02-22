@@ -4,16 +4,15 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import Index from './views/Index.vue'
 
-
+const layouts = import.meta.glob("@/views/layouts/*.vue",{eager:true})
 const cfg: XXECONFIG = {
     router: {
         root: {
             path: "/",
-            componet:Index
+            componet: Index,
+            layouts
         },
-        layouts:{
-            data:import.meta.glob("@/views/layouts/*.ts")
-        }
+
     }
 }
 

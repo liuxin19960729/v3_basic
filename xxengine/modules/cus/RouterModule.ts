@@ -16,7 +16,8 @@ declare global {
             root: {
                 path: string,
                 componet: any,
-                layouts: Record<string, any>;
+                layouts: Record<string, any>,
+                pages: Record<string, any>,
             },
         }
     }
@@ -24,22 +25,32 @@ declare global {
 export default class RouterModule extends Module implements IRouterModule, IRouter {
     name: string = "router";
     protected _router: Router = null;
-    protected autoload(prefex: string, parent: RouteRecordRaw, mods: any) {
+    protected autoload(prefex: string, parent: RouteRecordRaw, mods: any, isPage: boolean = false) {
         let route: RouteRecordRaw[] = [];
+        prefex = /\/$/.test(prefex) ? prefex : prefex + "/";
+        const reg = !isPage ? /(\w+).vue$/ : new RegExp(`${prefex}(\\w+).vue$`);
         Object.entries(mods).forEach(([k, v]) => {
-            let fname = k.match(/(\w+).vue/)[1];
-            route.push({
-                path: `${prefex}/${fname}`,
-                component: (<any>v).default
-            });
+            const match = k.match(reg)
+            if (!!match) {
+                const fname = match[1]
+                route.push({
+                    path: `${prefex}${fname}`,
+                    component: (<any>v).default,
+                    name: `${prefex == "/" ? "" : prefex}${fname}`.replace(/\//, "_")
+                });
+            }
         })
-        console.log(route)
         parent.children = route;
     }
     async onInit(app: App, cfg: Readonly<XXECONFIG>) {
         const routes: RouteRecordRaw[] = []
-        const root = { path: cfg.router.root.path, component: cfg.router.root.componet }
-        this.autoload("", root, cfg.router.root.layouts);
+        const root: RouteRecordRaw =
+            { path: cfg.router.root.path, component: cfg.router.root.componet }
+        //挂载root 下的layout
+        this.autoload("/", root, cfg.router.root.layouts);
+        //挂载 layout 下的pages
+        (<RouteRecordRaw[]>(root.children || [])).forEach(layout => this.autoload(layout.path,
+            layout, cfg.router.root.pages, true));
         routes.push(root);
         this._router = createRouter({
             history: createWebHistory(),

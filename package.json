@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
-    "build-lib":" run-p  type-check build-config-lib",
-    "build-config-lib":" vite build --config vite.config.lib.ts",
+    "build-lib": " run-p  type-check build-config-lib",
+    "build-config-lib": " vite build --config vite.config.lib.ts",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.191",
+    "dayjs": "^1.11.7",
     "lodash": "^4.17.21",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",

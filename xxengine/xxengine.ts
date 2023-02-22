@@ -1,7 +1,6 @@
 import type { App } from "vue";
 import Module from "./Module";
-
-
+import { LogLevel } from "./modules/sys/LoggerModule";
 
 declare global {
     interface ISysMoudles {
@@ -49,7 +48,7 @@ class Modules {
 
         Object.values(this.sys).forEach(v => (<Module>v).afterInit && (<Module>v).afterInit(app, cfg));
         Object.values(this.cus).forEach(v => (<Module>v).afterInit && (<Module>v).afterInit(app, cfg));
-        
+
         return Promise.resolve();
     }
     register(name: string, mod: Module, type: ModType) {
@@ -71,6 +70,7 @@ class Modules {
 const mods = new Modules();
 
 (<any>window)["xxe"] = mods;
+xxe.LogLevel = LogLevel;
 export default mods;
 
 

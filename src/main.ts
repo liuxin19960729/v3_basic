@@ -5,7 +5,7 @@ import App from './App.vue'
 import Index from './views/Index.vue'
 
 const layouts = import.meta.glob("@/views/layouts/*.vue", { eager: true })
-const pages=import.meta.glob("@/views/pages/*/*.vue", { eager: true });
+const pages = import.meta.glob("@/views/pages/*/*.vue", { eager: true });
 const cfg: XXECONFIG = {
     router: {
         root: {
@@ -15,17 +15,23 @@ const cfg: XXECONFIG = {
             pages
         },
 
+    },
+    comp: {
+        import: import.meta.glob("@/components/**/*.vue")
     }
 }
 
 const app = createApp(App)
 
 xxe.init(app, cfg).then(v => {
-    xxe.sys.log.error("c")
     app.mount("#app");
- 
 }).catch(e => {
     xxe.sys.log.error(e)
 })
 
-xxe.sys.log.debug("zz")
+/**
+ * 用来捕获子组件的错误
+ */
+app.config.errorHandler = (err => {
+
+})

@@ -76,8 +76,4 @@ export default class LoggerModule extends Module implements ILoggerModule {
     }
 
 
-
-    beforeInit(app: App<any>, cfg: Readonly<XXECONFIG>): void {
-        this.debug("ini")
-    }
 }

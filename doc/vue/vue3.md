@@ -1,3 +1,74 @@
+## 安装vue的几种方式
+### 1. vite 单页面方式
+### 2.cdn
+```js
+unpkg 全局构建版本
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+const { createApp } = Vue
+
+
+
+es模块版本
+<script type="module">
+  import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+</script>
+
+
+importamp 导入
+<script type="importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+</script>
+
+我们可以通过映射表导入其他模块 确保所有导入的库是es版本的库
+
+note:
+    导入表不是每一个浏览器都是支持映射表
+
+
+
+
+```
+
+## option 和 compositon
+### option
+```js
+export default{
+    // 响应式数据创建
+    data(){
+        return {
+
+        }
+    },
+    // 方法创建
+    methods:{
+        xxx(){
+
+        }
+    },
+    // 生命周期钩子函数
+    mounted(){
+    
+    }
+}
+
+```
+### compositon
+```js
+1.xxx.vue
+    <script setup>
+
+    const= a ref("x") // 创建响应式数据
+
+    function aa(); 创建方法
+
+    onMounted(()=>{
+
+    }) // 声明周期函数
+```
 ## vue生命周期
 ```
 beforeCreate:

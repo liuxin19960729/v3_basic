@@ -12,13 +12,7 @@ declare global {
     }
     interface XXECONFIG {
         log?: {
-            /**
-             * 1 info 信息打印
-             * 2 debug 答应
-             * 4 error 打印
-             * 1+2+3 =7 全部打印
-             */
-            level: number;
+            level: xxe.LogLevel;
         }
     }
     namespace xxe {

@@ -237,9 +237,261 @@ v-for ="n in 10"  会从0开始打印到10
 ```
 ### 通过key来管理状态
 ```
+v-for 表单 key是 index值  移动位置不会改变dom 位置而是改变 元素内容
 
+我们可以给key设置 id等唯一的值 这样修改元素位置会修改真实dom位置
+```
+### 组将上使用v-for
+```js
+<mycomp v-for="xxx in items" :key="xxx.id">
+默认不会给组件传入props值
+
+
+我们可以通过 props 向组件传入值
+<mycomp v-for="(xxx,index) in items" :key="xxx.id"
+:id="xxx.id" :index="index"
+>
 ```
 
+### 数组变化侦测
+```js
+push
+pop
+shift
+unshift
+splice
+sort
+reverse
+上面的方法对数组内容产生了影响
+```
+### 新数组替换原数组
+```
+1.computed 方式
+2.
+    methods
+
+```
+## 事件处理
+```
+v-on (简写@)
+
+
+内联事件
+$event 事件参数
+
+```
+### 事件修饰符
+```
+stop 停止时间传递
+prevent 阻止默认事件
+self 处理事件来自自己元素
+capture 捕获阶段处理
+once 事件处理一次
+passive 用来告诉我们scroll 调用里面不包含 event.preventDefault
+```
+### 按键修饰符号
+```
+@keydown.enter enter 键按下
+@keyup.page-down
+
+$event.key 满足上条件的时候才会触发
+```
+## 表单输入值绑定
+```js
+<input :value="text" @input="event=> text=event.target.value">
+简写方式
+<input v-model="text">
+
+input textarea 标签绑定 input 事件
+
+input radio checkbox 单选和多选绑定的checked 事件
+
+select 绑定的是value change 事件
+
+
+多选 值的绑定
+<input
+  type="checkbox"
+  v-model="toggle"
+  true-value="yes"
+  false-value="no" />
+多选 动态值绑定
+<input
+  type="checkbox"
+  v-model="toggle"
+  :true-value="dynamicTrueValue"
+  :false-value="dynamicFalseValue" />
+
+单选值绑定
+<input type="radio" v-model="pick" :value="first" />
+<input type="radio" v-model="pick" :value="second" />
+
+选择器值绑定
+<select v-model="selected">
+  <!-- 内联对象字面量 -->
+  <option :value="{ number: 123 }">123</option>
+</select>
+```
+### 修饰符
+```
+.lazy :例如失去焦点的时候触发更新事件
+.number 数字(默认输入的都是字符串)
+.trim 去除两端空格
+```
+### 侦听器
+```js
+export defalut{
+    data(){
+        return {
+            vv:1,
+            obj:{
+                zz:0;
+            }
+        }
+    },
+    watch:{
+        // 每当vv改变的时候吃法该监听器
+        vv(nv,ov){
+
+        },
+        //对象属性监听
+        'obj.zz'(nv,ov){
+
+        }
+    }
+}
+```
+### 深层次监听
+```js
+watch 默认浅层监听(对象 属性值改变 不会触发)
+
+设置深层次监听
+watch:{
+    obj:{
+        handler(nv,ov){
+
+        },
+        deep:true
+    }
+}
+```
+### 即时回调的监听器
+```
+默认 :只有当数据改变的时候才执行
+
+immediate: true 该组件mounted 的时候会立即执行一次
+```
+### 回调的触发时机
+```
+
+flush :"pre" 默认 会在组件更新之前 执行回到
+flush:"post" vue 更新之后回调
+```
+### this.$watch
+```js
+export default {
+  created() {
+    this.$watch('question', (newQuestion) => {
+      // ...
+    })
+  }
+}
+```
+### 停止侦听
+```js
+const unwatch=this.$watch("xxx",callback)
+unwatch() 停止监听
+```
+## 模版引用
+```js
+<input ref="input">
+
+this.$refs.input.focus();访问dom元素
+note:模版引用必须是挂载后才能访问
+
+
+v-for 的模版引用
+  <li v-for="item in list" ref="items">
+      {{ item }}
+    </li>
+获取的数据是 全部itme
+```
+### 函数模本引用
+```js
+<input :ref="(el)=>{}" 每次更新都调用
+note: 函数在卸载的时候也会被调用 el值为null
+```
+### 组件上的ref
+```js
+选项式api 
+    引用值 和 组件的this完全一致
+
+如何限制父组件对子组件属性的访问权限
+export default {
+    // 写入需要暴露给父组件的属性
+    expose:['']
+}
+```
+## 组件
+### 组建基础
+```js
+创建组件的两种放肆
+1.sfc  xxx.vue
+<script>
+    export default{
+
+    }
+</scriipt>
+<template>
+</template>
+
+
+2.不构建的方式
+    export default{
+
+        template:`html标签等内容`
+    }
+
+组件的使用
+
+export default {
+    components:{
+        组件; 把组件注册进去
+    }
+}
+
+传递props
+
+export default{
+    //需要接收 xx属性 并且把他放入 this对象里面
+    // 属性 注册
+    props:['xx']
+}
+
+子组件可以向父组件传递事件
+注册事件 事件名字为 xxx
+<parent @xxx="">
+    
+</parent>
+
+子组件
+export default{
+    // 接收父组件 xxx 事件 注册
+    emits:['xxx']
+}
+
+emit("xxx") 发送事件
+
+动态组件 currentTab 是组件名
+<component :is="currentTab"></component>
+通过改变组件名吧对应的组件换上去
+
+```
+### 深入组件
+#### 组件注册
+```
+
+```
 ## option 和 compositon
 ### option
 ```js

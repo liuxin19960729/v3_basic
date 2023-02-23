@@ -913,8 +913,392 @@ errorComponent 当promise 出现错误的时候 reject 会显示错误组件
 
 ```
 ## 逻辑复用
+### 组合式函数
+### 自定义指令
+```js
+v-xx 指令被注册
+app.directive("xx",{
+    // 指令钩子
+    // 绑定 attribute 和 事件监听器之前 
+    created(el,binding,vnode,preVnode){
+
+    }，
+    //被插入的dom之前
+    beforeMounted(el,binding,vnode,preVnode){
+
+    },
+    // 绑定到父组件 和自己所有的子节点挂载完全
+    mounted(el,binding,vnode,preVnode){
+
+    },
+    // 父组件更新前调用
+    beforeUpdate((el,binding,vnode,preVnode){
+
+    }
+    // 绑定到父组件 和自己所有的子节点更新后调用
+    update(el,binding,vnode,preVnode){
+
+    },
+    // 从父元素卸载之前
+    beforeUmounted(el,binding,vnode,preVnode){
+
+    },
+    //从父组件卸载之后
+    unmounted(el,binding,vnode,preVnode){
+
+    }
+})
+
+el:元素 可以直接操作dom
+bindding:
+    value
+    oldVaue 
+    arg
+      v-my-directive:foo 为 foo  
+    modifiers
+        v-my-directive.foo.bar
+        {foo:true,bar:true}
+    
+vnode
+    绑定元素底层 VNode
+prevNode
+    beforUpdate 和 update 可以
+    以前的vNode
+
+
+<div v-example:foo.bar="baz">
+binding
+{
+  arg: 'foo',
+  modifiers: { bar: true },
+  value: /* `baz` 的值 */,
+  oldValue: /* 上一次更新时 `baz` 的值 */
+}
+
+<div v-example:[arg]="value"></div> argv 响应式的更新
+
+note:在不同的数据间共享数据使用 el.dataset 来共享数据
+
+简写形式
+app.directive('color', (el, binding) => {
+  // 这会在 `mounted` 和 `updated` 时都调用
+  el.style.color = binding.value
+})
+
+
+组件上使用
+1.会始终用到组件的跟节点
+2.多根节点使用 指令 会抛出一个警告 
+   note:多根节点不能通过 v-bind="$attr" 来继承
+
 ```
 
+### 插件
+```js
+app.use(plugin,{
+    // 可选的选项
+})
+
+插件
+    1.必须要有 install 函数
+    const myPlugin = {
+    install(app, options) {
+        // 配置此应用
+    }
+    }
+
+插件添加全局属性
+export default {
+  install: (app, options) => {
+    // 注入一个全局可用的 $translate() 方法
+    app.config.globalProperties.$translate = (key) => {
+      // 获取 `options` 对象的深层属性
+      // 使用 `key` 作为索引
+      return key.split('.').reduce((o, i) => {
+        if (o) return o[i]
+      }, options)//向install 传递可选参数
+    }
+  }
+}
+<h1>{{ $translate('greetings.hello') }}</h1>
+
+```
+## 内置组件
+### Transition
+[transiton](https://cn.vuejs.org/guide/built-ins/transition.html#javascript-hooks)
+```js
+Transiton:
+    元素进入和离开dom 时应用动画
+
+TransitionGroup:
+    v-for 列表中插入和移动的时候应用动画
+
+
+触发条件
+v-if
+v-show
+<component> 动态组件切换的时候触发
+
+
+<Transition>
+    <p v-if="show"> </p>
+</Transition>
+
+.v-enter-active,.v-leave-active{
+
+}
+
+.v-enter-from,
+.v-leave-to {
+  
+}
+
+
+Transiton 支持单个元素 或组件作为插槽内容(组件必须有根元素)
+
+基于css的过度动画
+v-enter-from  --->v-enter-to
+    v-enter-active 在进入的时候立即添加属性
+v-leave-from  --->v-leave-to 
+       v-enter-active 在离开的时候立即添加属性
+
+为过度动画命名
+<Transiton name="xx"> </Transiton>
+class 选择器变为
+.xx-enter-from
+.xx-enter-active
+.xx-enter-to
+
+.xx-leave-from
+.xx-leave-active
+.xx-leave-to
+
+
+在离开 和进入的时候天机 输入曲线等
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+css的animation
+
+<Transition type="animation"></Transiton>
+animation 
+transiton
+告诉Vue应该关注那个执行完的事件
+transitionend 或 这 animationend 事件
+
+
+Transiton 下的 属性精确设置
+<Transition name="nested">
+  <div v-if="show" class="outer">
+    <div class="inner">
+      Hello
+    </div>
+  </div>
+</Transition>
+....
+.nested-enter-active .inner,{
+
+}
+
+子类设置动画 或 过度  在根原始 animationend or transitionend 是监控不到的
+通过下面的设置
+<Transition durition="毫秒事件"> <Transiton>
+
+
+
+对enter 和 leave 设置时间
+:duration="{enter:100,leave:2900}"
+
+
+Js钩子
+
+@before-enter
+@enter
+@after-enter
+@enter-cancelled
+@befor-leave
+@leave
+@after-leave
+@leave-cancelled
+
+
+
+<Transition :css="false">
+告诉vue可以跳过css的自动探测,全全由我们这些钩子函数来负责
+
+可以复用的动态效果组件
+slot把元素插入到里面
+
+
+元素初次渲染执行过度效果
+<Transiton appear></Transition>
+
+
+v-if v-show 
+v-if v-else v-else -if 
+只要确保Transition 里面有一个元素那么过度效果就会被触发
+
+过度模式
+1.position:absolute  避免影响布局
+2.先离开在进来
+ <Transition mode="out-in">
+3.先进来 在离开
+ <Transition mode="in-out">
+
+
+组件间的过度(动态组件切换)
+<Transition name="fade" mode="out-in">
+  <component :is="activeComponent"></component>
+</Transition>
+
+
+动态过度
+<Transition :name="">
+```
+### TransitionGroup
+```js
+1.列表中每个元素都是独一无的key
+2.css 过度会被用到列表的元素上
+3.tag 作为元素的容器
+
+<TransitionGroup name="list" tag="ul">
+  <li v-for="item in items" :key="item">
+    {{ item }}
+  </li>
+</TransitionGroup>
+
+```
+### keepAlive
+```js
+<componet :is=""/>
+每次切换的时候会被销毁
+
+缓存当前的组件
+<KeepAlive>
+    <component :is="activeComponet">
+</KeepAlive>
+
+这设置根据那些组件缓存 和 不缓存的 
+<KeepAlive include="a,b">
+  <component :is="view" />
+</KeepAlive>
+
+<!-- 正则表达式 (需使用 `v-bind`) -->
+<KeepAlive :include="/a|b/">
+  <component :is="view" />
+</KeepAlive>
+
+<!-- 数组 (需使用 `v-bind`) -->
+<KeepAlive :include="['a', 'b']">
+  <component :is="view" />
+</KeepAlive>
+
+设置对打缓存的实例数字(LRU 缓存的方式)
+<KeepAlive :max="10">
+
+缓存的生命周期
+export default {
+  activated() {
+    // 在首次挂载、
+    // 以及每次从缓存中被重新插入的时候调用
+  },
+  deactivated() {
+    // 在从 DOM 上移除、进入缓存
+    // 以及组件卸载时调用
+  }
+}
+
+activated 组件挂载 时也会调用
+deactivated 组件卸载时也会调用
+```
+### Teleport
+```js
+作用:将组件一部分模版传输DOM结构外层位置去
+
+传统 position:fixed
+   任何祖先元素设置 transform perspective filter 则会以这个祖先元素为定位
+
+Vue解决
+<Teleport to="body">
+    内容
+</Teleport>
+
+to 传送的目标
+ to接收值是以css选择器的方式接收值
+
+
+Teleport的禁用
+
+<Teleport :disabled ="">
+
+多个Teleport共享目标
+
+<Teleport to="#aa">
+ <div>A </div>
+</Teleport>
+
+<Teleport to="#aa">
+ <div>B</div>
+</Teleport>
+
+
+渲染结果为
+<div id="aa">
+    <div>A </div>
+    <div>B </div>
+<div>
+```
+### Suspense
+[suspense](https://cn.vuejs.org/guide/built-ins/suspense.html#async-setup)
+```js
+解决异步等待
+
+1.setup() 异步函数 await 
+  export default {
+    async setup() {}
+  }
+    <script setup>
+    const res = await fetch(...)
+    const posts = await res.json()
+    </script>
+
+2.异步组件
+  definedAsyncComponent()
+  默认就是 susiable:true
+  如果使用Suspense 会全部交给  Suspense  接管
+   susiable:false
+   不会由 Suspense接管
+
+
+插槽
+#default 
+  加载异步成功后展示  
+#fallback
+    异步挂载展示的页面
+
+事件
+pending
+    挂起时触发
+resolve
+    default 槽完成之后触发
+fallback
+    fallback 槽显示的时候触发
+
+
+错误处理
+ Suspense 目前自己没有错误处理
+ 可以在父组件
+ onErrorCaptured()
+ 和 
+ errorCaptured()
+ 来捕获错误
+
+ 
 ```
 ## option 和 compositon
 ### option

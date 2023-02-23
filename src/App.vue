@@ -3,7 +3,9 @@
         <router-view></router-view>
     </div>
 </template>
-<script lang="ts" setup>
+<script lang="ts" >
+
+
 </script>
 
 <style lang="scss" scoped></style>

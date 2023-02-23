@@ -613,6 +613,100 @@ export default{
 }
 ```
 #### 组件v-model
+```js
+组件使用v-model 的展开形式
+<CustomComp :modelValue="text" @input:modelValue="nv=>text=nv"> </CustomComp>
+
+组件v-model
+    1.把modelValue 属性传递给子组件
+    2.注册input:modelValue 事件到子组件上面
+
+
+model value 的参数
+
+v-model :默认
+    v-model:modelValue
+v-model:title="xx" 通过v-model 的属性
+   
+   子组件
+   export default{
+         //接收title 的值
+         props: ['title'],
+         //发送update:title的时间修改title的属性值
+         emits: ['update:title']
+   }
+
+多个v-model 的绑定
+<UserName
+  v-model:first-name="first"
+  v-model:last-name="last"
+/>
+
+
+v-model 的修饰符
+自定义修饰符
+export default{
+    modelVale:String,
+    // 用来接收修饰符
+    modelModifiers:{
+        default:()=>({})
+    }
+    methods: {
+    emitValue(e) {
+      let value = e.target.value
+      // 判断是否定义修饰符号
+      if (this.modelModifiers.capitalize) {
+        value = value.charAt(0).toUpperCase() + value.slice(1)
+      }
+      this.$emit('update:modelValue', value)
+    }
+  }
+}
+v-model 对不同属性创建修饰符号
+note:
+    v-model 可以在组件绑定不同的属性
+    如果要对属性 使用不同修饰符
+    export default{
+        props:['属性名'，'属性名Modifiers']
+    }
+```
+#### 遗传Attributes
+```js
+单元素作为根
+1.class继承
+
+   单元素 继承组件class 
+   氮元素 如要也有class 会合并 组件class
+   note: 组件上的class在后面 所以class里面的一些属性 会覆盖 单元素的属性
+
+2.v-on继承
+    <MyComp v-on:click="">
+    click 事件会被添加到 根元素上面
+    note:
+        根元素本来也绑定了 click 则注册的两个click事件都会触发
+
+3.关闭继承
+    inheritAttr:false
+
+4.$attr
+props emits class style v-on
+props 访问
+    $attr['属性名']
+v-on 访问
+    $attr[`on${事件名字}`]
+
+
+
+<input v-bind="$attr">
+会将 组件上所有的属性都放入 input 标签上面
+
+
+解决组件多根节点的属性问题
+<header> </header>
+<main v-bind="$attr"></main>
+<footer></footer>
+```
+#### 插槽
 ```
 
 ```

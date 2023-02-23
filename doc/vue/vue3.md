@@ -489,6 +489,130 @@ emit("xxx") 发送事件
 ```
 ### 深入组件
 #### 组件注册
+```js
+全局组件注册
+app.component(key,comp)
+
+局部注册
+局部注册 该组件只能在当前的地方使用
+export default{
+    components:{
+        compA,
+    }
+} 
+```
+#### props
+```js
+组件需要显示的告诉vue 我要哪些属性
+export default{
+    props:['zzA']
+}
+
+对属性限定类型
+export default{
+    props:{
+        ppa:String
+        zza:Number
+    }
+}
+ 当父组件传递了错误的类型会在浏览器控制台发痴警告
+
+传递多个属性
+<MyComp v-bind="obj"> </MyComp>
+export default{
+    data(){
+        return {
+            obj:{
+                id:xx,
+                zz:xx
+            }
+        }
+    }
+}
+传递了 id 和 zz属性
+
+单向数据流
+prop 数据是只读的
+父组件更新 会将props数据传入给子组件
+
+note:当传入对象 和 数组 属性的时候 最好不要改变里面的值
+     这样耦合性大 最好的好处是发送 事件通知父组件
+
+
+Prop校验
+     允许多种类型
+     propB: [String, Number],
+    String 类型并且必填
+    propC: {
+      type: String,
+      required: true
+    }
+    
+      // Number 类型的默认值
+    propD: {
+      type: Number,
+      default: 100
+    }
+    自定义验证器
+     validator(value) {
+        // The value must match one of these strings
+        return ['success', 'warning', 'danger'].includes(value)
+      }
+
+    propE: {
+      type: Object,
+      // 对象或者数组应当用工厂函数返回。
+      // 工厂函数会收到组件所接收的原始 props
+      // 作为参数
+      default(rawProps) {
+        return { message: 'hello' }
+      }
+    },
+
+  note:
+    1.默认属性可选 否则 required=true 必须写
+    2.除Boolean 默认都是undefined
+    3.validator 校验失败会在控制台打印警告信息
+
+运行时类型检查
+ 他是通过 instanceof 来检查的
+ 可以自定义类
+
+  props:{
+    xxx:Boolean
+  }
+
+  <comp xxx> </comp>
+    xxx属性是true
+  <comp > </comp>
+  xxx属性是false
+
+```
+#### 组件事件
+```js
+// 组件的事件只执行一次
+<MyComponent @some-event.once="callback" />
+
+
+$emit() 触发自定义事件
+
+显示的声明我们要触发的事件
+export default {
+    emits:[]
+}
+
+export default{
+    emits:{
+        返回 true 验证通过 发送事件 返回false 验证不通过
+        sumbit:(v){
+
+        }，
+        没有事件验证
+        cusclick:null
+    }
+}
+```
+#### 组件v-model
 ```
 
 ```

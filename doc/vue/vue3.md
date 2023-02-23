@@ -707,6 +707,212 @@ v-on 访问
 <footer></footer>
 ```
 #### 插槽
+```js
+默认内容
+<button>
+    <slot>默认类型</slot>
+</buttons>
+
+<MyComps><MyComp>
+这样会使用默认内容
+<button>
+    默认类型
+</buttons>
+
+<MyComps>覆盖默认内容<MyComp>
+<button>
+    覆盖默认内容
+</buttons>
+
+具名插槽
+给每个插槽取名
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
+</div>
+
+指定插槽使用
+<MyComp>
+    <template v-solt:插槽名>
+            .....
+    </template>
+</MyComp>
+ <template v-solt:插槽名> 可以简写为
+ <template #:插槽名>
+
+动态插槽名字
+<template #:[dynimicalName]>
+
+
+作用域插槽
+获取子组件域内的值
+
+<MyComp #="xxx"></MyComp>
+
+<!-- <MyComponent> 的模板 -->
+<div>
+  <slot :text="greetingMessage" :count="1"></slot>
+</div>
+
+获取到子组件<slot>的text和cont  属性值
+<MyComponent v-slot="slotProps">
+  {{ slotProps.text }} {{ slotProps.count }}
+</MyComponent>
+
+
+<slot name="" aaa="ss">
+注意name是vue属性的保留字 不会传递出去 只会传递{aaa:'ss'}
+
+
+```
+#### 注入依赖
+```js
+props 是逐级传递的,可能从根文件传递属性到 很深层级的组件上
+
+provide 和 inject 解决属性 深入传递的属性的问题
+
+export default{
+    provide:{
+        
+    }
+}
+
+注意下面这种情况不会让相应的被响应提供
+export default {
+  data() {
+    return {
+      message: 'hello!'
+    }
+  },
+  provide() {
+    // 使用函数的形式，可以访问到 `this`
+    return {
+      message: this.message
+    }
+  }
+}
+
+
+全局提供
+app.provide(k,v)
+
+
+
+注入
+注入的时机 在组件解析之前注入
+data(){} 里面可以访问 data() 已经在解析了 所有可以使用 inject的值
+export default{
+    inject:['k']
+    created:{
+        // 访问到插入的值
+        console.log(this.k)
+    }
+}
+
+
+注入别名
+export default {
+    inject:{
+        别名:{
+            from :'k'
+        }
+    }
+}
+
+
+提供注入的默认值(在没有provide 的时候)
+export default {
+    inject:{
+        别名:{
+            from :'k'，
+            default:"default value"
+        },
+        
+        xxx:{
+            default:()=>{默认值}
+        }
+    }
+}
+
+
+和响应式数据配合
+
+
+export default{
+    data(){
+        return {
+            message:"ss"
+        }
+    }
+    provide(){
+        return {
+            xxx:computed(()=>this.message)
+        }
+    }
+}
+
+Symbol 注入名 避免提供冲突
+```
+#### 异步组件
+```js
+defineAsyncComponent 定义一个异步组件
+
+const asycmp=definedAsyncComponent(()=>{
+    return new Promise((res,rej)=>{
+        // 从服务器拉取组件
+        resolve(/**获取到的组件 */)
+    })
+})
+
+
+es模块 import() 返回的就是一个 promise
+import { defineAsyncComponent } from 'vue'
+
+const AsyncComp = defineAsyncComponent(() =>
+  import('./components/MyComponent.vue')
+)
+只有在页面使用到该组件的是够才会加载该组件
+
+全局注册
+app.componet(AsyncComp)
+
+局部注册
+export default {
+  components: {
+    AdminPage: defineAsyncComponent(() =>
+      import('./components/AdminPageComponent.vue')
+    )
+  }
+}
+
+
+加载与错误状态
+
+const asyncComp=definedAsyncCommponent({
+    loader:()=>import("xxx.vue"),
+    // 加载异步的时候使用的组件
+    loadingComponent:LoadingComponent,
+    // 在加载组件时的延迟时间
+    delay:200,
+    //加载错误时的组件
+    errorComponent:ErrorComponent,
+    // 默认infinity 没有限制
+    timeout:3000,
+})
+
+delay:200, 设置避免 网络太快 造成闪烁
+
+errorComponent 当promise 出现错误的时候 reject 会显示错误组件
+
+```
+## 逻辑复用
 ```
 
 ```

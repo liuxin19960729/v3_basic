@@ -1,10 +1,7 @@
 <template>
-    <div>
-        <router-view></router-view>
-    </div>
+   <router-view></router-view>
 </template>
-<script lang="ts" >
-
+<script lang="ts" setup>
 
 </script>
 

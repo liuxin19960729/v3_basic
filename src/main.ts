@@ -1,8 +1,10 @@
 
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import Index from './views/Index.vue'
+import './plugins/taiwindcss/index.css'
 
 const layouts = import.meta.glob("@/views/layouts/*.vue", { eager: true })
 const pages = import.meta.glob("@/views/pages/*/*.vue", { eager: true });
@@ -22,7 +24,7 @@ const cfg: XXECONFIG = {
 }
 
 const app = createApp(App)
-
+const pinia=createPinia()
 xxe.init(app, cfg).then(v => {
     app.mount("#app");
 }).catch(e => {

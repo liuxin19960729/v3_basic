@@ -1,8 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 const defaultThem = require('tailwindcss/defaultTheme')
 // tailwinds 的默认颜色
-const colors=require('tailwindcss/colors')
+const colors = require('tailwindcss/colors')
 module.exports = {
+ 
+
   /**
    * 配置有哪些地方使用tailwindcss 
    */
@@ -19,20 +21,24 @@ module.exports = {
       pad: ' 768px',
       // 把原来的数据放入到里面
       ...defaultThem.screens,
-      
+
     },
-    colors:{
+    colors: {
       ...colors
     },
+    // spacing:{
+
+    // }
+    // ,
     extend: {
-      colors:{
-        mac:{
-          100:"#74CFFB",
-          200:"#49819D",
-          300:"#0B1419",
-          DEFAULT:"red",
+      colors: {
+        mac: {
+          100: "#74CFFB",
+          200: "#49819D",
+          300: "#0B1419",
+          DEFAULT: "red",
         }
-        
+
       },
 
       // 

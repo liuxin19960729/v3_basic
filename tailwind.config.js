@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultThem = require('tailwindcss/defaultTheme')
 module.exports = {
   /**
    * 配置有哪些地方使用tailwindcss 
@@ -7,16 +8,57 @@ module.exports = {
     "./index.html",
     // "./src/plugins/tailwindcss/index.css",
     "./src/**/*.{js,ts,jsx,tsx,vue}",
+
+  ],
+  theme: {
+    screens: {
+      // 给默认添加一个屏幕断点
+      xs: '475px',
+      pad: ' 768px',
+      // 把原来的数据放入到里面
+      ...defaultThem.screens,
+    },
+    extend: {
+
+
+      // 
+      screens: {
+        xs: '475px'
+      }
+    }
+  },
+  /**
+   *  安全列表无论是否使用tailwind 类都会生成 安全列表里面的这些类
+   */
+  safelist: [
+    // 'bg-red-600',
+    //  {
+    //   pattern:/bg-(\w+)-500/
+    //  }
+  ],
+  blocklist: [
+    // 'bg-red-500'
   ],
   /**
    * 主题配置
    * 调色 字体 字体比例  ....
    */
-  theme: {
-    extend: {},
-  },
+  // theme: {
+  //   extend: {
 
-  plugins: [],
+  //   },
+  //   screens:{
+
+  //   },
+  //   colors:{
+
+  //   },
+  //   spacing:{
+
+  //   }
+  // },
+
+  // plugins: [],
 
   /**
    * tailwind 生成实例前缀

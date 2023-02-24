@@ -4,9 +4,10 @@
         <div class="bg-red-500">
             <ul>
                 <li><a href="./xiangyinshi">响应式</a></li>
+                <li><a href="./color">颜色</a></li>
             </ul>
         </div>
-        <button class="bg-gray-400 rounded-sm px-[20px] py-[10px]" @click="back">回退</button>
+        <!-- <button class="bg-gray-400 rounded-sm px-[20px] py-[10px]" @click="back">回退</button> -->
         <div>
 
             <router-view>
